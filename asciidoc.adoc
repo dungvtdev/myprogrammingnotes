@@ -1,0 +1,52 @@
+= Tip for asciidoc writing.
+:numbered:
+
+Doc Writer <dungvt.dev@gmail.com>
+
+== Conventions.
+
+*<option>* dạng " :option: value "  ở đầu file.
+
+== Tip
+
+=== Options tips.
+
+==== Đánh số chỉ mục từ lv 2 trở đi.
+----
+<option> :numbered:
+----
+
+=== Format tips.
+
+==== Đóng khung dòng.
+----
+Đưa paragraph vào cặp ----
+"----"
+p
+"----"
+----
+
+==== Làm rõ `từ đặc biệt`
+----
+Dùng trong cặp ``.
+----
+
+==== Highlights code
+----
+[source,java,linenums]
+//flowing code here
+----
+
+==== Chèn hình ảnh
+Link doc http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/#images[Ascii doc for image]
+
+* Thêm <option> base url:
+----
+:imagesdir: <dir, utl, relative url...> ex: ./images
+----
+* Insert Image:
+----
+image::sunset.jpg[alt_name]
+image::sunset.jpg[caption="", title="", alt=""...]
+image::http://....[...]
+----
