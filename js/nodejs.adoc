@@ -1,0 +1,4 @@
+= Quick notes on Javascript
+:imagesdir: ./images
+
+image::android.jpg[Android]
