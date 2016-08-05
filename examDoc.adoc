@@ -1,0 +1,409 @@
+= Quick notes on Python
+:Author: Nguyễn Hà Dương (cmpitg)
+:Email: <cmpitg@gmail.com>
+:toc: left
+:toclevels: 4
+:numbered:
+:source-highlighter: pygments
+:pygments-css: class
+:icons: font
+:imagesdirs: ../assets/images
+
+== Tips and tricks
+
+=== Checking if a variable is defined
+
+[source,python,linenums]
+----
+try:
+    the_var
+except NameError:
+    print("Undefined")
+else:
+    print("Defined")
+----
+
+=== Calculating MD5 digest
+
+Source: http://stackoverflow.com/questions/5297448/how-to-get-md5-sum-of-a-string
+
+[source,python,linenums]
+----
+import hashlib
+
+
+def md5_digest(s):
+    """Calculates an MD5 digest of a string."""
+    m = hashlib.md5()
+    m.update(s)
+    return m.hexdigest()
+----
+
+=== `pip install` inside Python
+
+Source: http://stackoverflow.com/questions/12332975/installing-python-module-within-code
+
+[source,python,linenums]
+----
+import pip
+
+
+def install(package):
+    pip.main(['install', package])
+
+install('tornado')
+----
+
+===  Installing numpy and scipy in virtualenv
+
+For Ubuntu/Debian:
+
+[source,bash,linenums]
+----
+sudo apt-get install -y gfortran libopenblas-dev liblapack-dev
+pip install numpy scipy
+----
+
+=== Installing PIL in virtualenv
+
+Source: http://goo.gl/NOZtUu
+
+[source,python,linenums]
+----
+sudo aptitude install libjpeg-dev
+
+sudo ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib
+sudo ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib
+sudo ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib
+
+pip install -I PIL
+----
+
+=== Using temporary file
+
+[source,python,linenums]
+----
+from tempfile import mkstemp
+from os import fdopen
+
+
+def write_temp_file(content):
+    """
+    Writes content to a temporary file and returns the file path.
+    """
+    fd, path = mkstemp()
+
+    with fdopen(fd, 'w') as out:
+        out.write(content)
+        out.write("\n")
+
+    return path
+----
+
+=== Calling method or function by name
+
+* Calling method:
++
+[source,python,linenums]
+----
+bar = getattr(foo, 'bar')
+result = method(arg_1, arg_2)
+----
+
+* Calling function:
++
+[source,python,linenums]
+----
+locals()["myfunction"]()
+# or
+globals()["myfunction"]()
+----
++
+`locals` returns a dictionary containing local symbol table. `globals`
+returns a dictionary with global symbol table.
+
+=== Trapping `Ctrl-C` but not SIGTERM
+
+By using `KeyboardInterrupt` exception:
+
+[source,python,linenums]
+----
+import time, sys
+
+
+x = 1
+while True:
+    try:
+        print(x)
+        time.sleep(.3)
+        x += 1
+    except KeyboardInterrupt:
+        print "Bye"
+        sys.exit()
+----
+
+=== Dropping into IPython PDB
+
+Install `ipdb`
+
+[source,bash,linenums]
+----
+pip install ipdb
+----
+
+
+Then in your code:
+
+[source,python,linenums]
+----
+
+import ipdb; ipdb.set_trace()
+----
+
+=== Getting site-package path
+
+[source,python,linenums]
+----
+from distutils.sysconfig import get_python_lib
+
+
+print(get_python_lib())
+----
+
+=== Generating a random base64 string
+
+```python
+import os
+import base64
+
+
+string_length = 32
+random_string = base64.urlsafe_b64encode(os.urandom(string_length))
+```
+
+=== Generating SSH key pairs on file system
+
+Requirement: Pycrypto.
+
+[source,python,linenums]
+----
+from Crypto.PublicKey import RSA
+from tempfile import mkstemp
+from os import fdopen, chmod
+
+import stat
+
+
+def generate_RSA(bits=4096):
+    """
+    Generates an RSA keypair with an exponent of 65537.
+    """
+    new_key      = RSA.generate(bits, e=65537)
+    public_key   = new_key.publickey().exportKey("OpenSSH")
+    private_key  = new_key.exportKey("PEM")
+    return public_key, private_key
+
+
+def write_temp_file(content):
+    """
+    Writes content to a temporary file and returns the file path.
+    """
+    fd, path = mkstemp()
+
+    with fdopen(fd, 'w') as out:
+        out.write(content)
+        out.write("\n")
+
+    return path
+
+
+def gen_keys_write_files():
+    """
+    Generates an RSA key pair and writes them into 2 temporary files: one for
+    public key and the other one for private key.
+    """
+    pub, priv = generate_RSA()
+    pub_path, priv_path = write_temp_file(pub), write_temp_file(priv)
+
+    # 644 for public key
+    chmod(pub_path, stat.S_IRUSR \
+          | stat.S_IWUSR \
+          | stat.S_IRGRP \
+          | stat.S_IROTH)
+
+    # 600 for private key
+    chmod(priv_path, stat.S_IRUSR | stat.S_IWUSR)
+
+    return pub_path, priv_path
+----
+
+=== Generating cookie secret for web framework
+
+[source,python,linenums]
+----
+import base64
+import uuid
+
+
+print(base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes))
+----
+
+=== Determining if a module exists
+
+[source,python,linenums]
+----
+try:
+    __import__("libcloud")
+    print("A module")
+except ImportError:
+    print("Not a module")
+----
+
+=== Retrieving path for a module
+
+[source,python,linenums]
+----
+import a_module
+
+
+print(a_module.__file__)
+----
+
+=== Calling `easy_install` as module
+
+[source,sh,linenums]
+----
+python -m easy_install
+----
+
+=== Using Python Anaconda distribution as a virtual environment
+
+Source: http://stackoverflow.com/questions/16727171/installing-anaconda-into-a-virtual-environment
+
+[source,sh,linenums]
+----
+# Download Python Anaconda from http://continuum.io/downloads
+cd /tmp/
+wget <anaconda-download-url>
+
+# Install Anaconda into a place
+bash Anaconda-*.sh -b -p <anaconda-destination>
+----
+
+Now whenever you want to use Python from Anaconda:
+
+[source,sh,linenums]
+----
+source <anaconda-destination>/bin/activate <anaconda-destination>
+----
+
+=== One way to control relative import
+
+[source,python,linenums]
+----
+import sys
+import os
+sys.path.insert(0, os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../..")
+))
+
+import fully.qualified.module.path
+----
+
+== Some Pip notes
+
+* To create a working environment requirement with `pip`:
++
+[source,sh,linenums]
+----
+pip freeze > stable-req.txt
+----
+
+* To install *editable* packages with `pip` (maybe from a `file:///` or SVN or Git, ...):
++
+[source,sh,linenums]
+----
+pip install -e URI
+----
+
+* To install requirements from requirement file:
++
+[source,sh,linenums]
+----
+pip install -r requirements.txt
+----
+
+* To install current directory as package:
++
+[source,sh,linenums]
+----
+pip install -e .
+----
+
+* `pip`'s `requirement.txt` format: http://www.pip-installer.org/en/1.1/requirements.html
+
+== FAQs
+
+=== Why global interpreter lock (GIL) in CPython?
+
+* Source #1:
+  http://stackoverflow.com/questions/265687/why-the-global-interpreter-lock
++
+[quote]
+____
+In general, for any thread safety problem you will need to protect your
+internal data structures with locks. This can be done with various levels of
+granularity.
+
+* You can use fine-grained locking, where every seperate structure has its own
+  lock.
+* You can use coarse-grained locking where one lock protects everything (the
+  GIL approach).
+____
++
+[quote]
+____
+Fine-grained locking allows greater paralellism - two threads can execute in
+paralell when they don't share any resources. However there is a much larger
+administrative overhead. For every line of code, you may need to acquire and
+release several locks.
+____
++
+[quote]
+____
+The coarse grained approach is the opposite. Two threads can't run at the same
+time, but an individual thread will run faster because its not doing so much
+bookkeeping. Ultimately it comes down to a tradeoff between single-threaded
+speed and paralellism.
+____
+
+* Source #2:
+  http://programmers.stackexchange.com/questions/186889/why-was-python-written-with-the-gil[Why
+  Was Python Written with the GIL?]
++
+[quote]
+____
+The GIL is controversial because it prevents multithreaded CPython programs
+from taking full advantage of multiprocessor systems in certain
+situations. Note that potentially blocking or long-running operations, such as
+I/O, image processing, and NumPy number crunching, happen outside
+the GIL. Therefore it is only in multithreaded programs that spend a lot of
+time inside the GIL, interpreting CPython bytecode, that the GIL becomes a
+bottleneck.
+____
+
+=== IPython startup script directory
+
+Reference: http://ipython.org/ipython-doc/stable/development/config.html
+
+`$HOME/.ipython/profile_default/startup/`
+
+Just put a Python file like `00-run-something.py`.
+
+=== Enum good practice
+
+[source,python,linenums]
+----
+class Materials:
+    Shaded, Shiny, Transparent, Matte = range(4)
+----

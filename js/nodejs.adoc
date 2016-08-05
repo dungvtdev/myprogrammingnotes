@@ -1,4 +1,12 @@
-= Quick notes on Javascript
+= Quick notes on Nodejs
 :imagesdir: ./images
+:numbered:
 
-image::android.jpg[Android]
+image::nodejsPM.png[alt="Nodejs Processing Model",link="http://stackoverflow.com/questions/14795145/how-the-single-threaded-non-blocking-io-model-works-in-node-js"]
+
+== Must read first.
+
+* Nodejs has only *one thread* to run javascript code.
+* It's asynchronize.
+* Workers is a *Thread pool* dispatch (C++) threads for handler a job main thread assign to and callback after finished.
+** _So all I/O in Node is asynchronous and nonblocking._

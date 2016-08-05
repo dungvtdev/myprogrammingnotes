@@ -1,0 +1,31 @@
+= Quick notes java core
+:numbered:
+:imagesdir: ./images
+
+== NIO
+- *SocketChannel*: -- _for read_: return one block of message, even if message doesn't have just one block (1 block - multi messages or 1 message - multi blocks), need buffer incomming block waiting for message had arrived complete.
+        -- _for write_: need check if have buffer to write in, number of bytes had writen, number of bytes had not.
+- *ServerSocketChannel*
+- *Selector*: select one from set of Channel which is ready to use.
+- *Basic concept*
+
+image::nio-server-concept.png[Basic NIO server concept]
+
+== Concurrent
+=== Core
+- *ExecutorService*
+
+[source,java]
+----
+ExecutorService pool = Executors.newFixedThreadPool(10);
+----
+- *Callable<T>* { public T call() throws Exception }
+
+=== *Future* as _promise_
+Link http://http://www.nurkiewicz.com/2013/02/javautilconcurrentfuture-basics.html
+
+- *get()*: block until has st to get.
+- *isDone()*: non-blocking, return true if can get() without block.
+- *cancel(mayInterruptIfRunning)*:
+-- true: interrupt even if Callable.call() is already in the middle, *_other waiting for Future.get() blocking method will throw InterruptedException_*
+-- false: just interrupt Callables are being pending queue, hadn't started yet.

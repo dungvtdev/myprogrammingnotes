@@ -3,6 +3,9 @@
 
 Doc Writer <dungvt.dev@gmail.com>
 
+== Useful doc.
+https://powerman.name/doc/asciidoc
+
 == Conventions.
 
 *<option>* dạng " :option: value "  ở đầu file.
