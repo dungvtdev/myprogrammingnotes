@@ -34,3 +34,15 @@ Link http://www.nurkiewicz.com/2013/02/javautilconcurrentfuture-basics.html
 - *cancel(mayInterruptIfRunning)*:
 -- true: interrupt even if Callable.call() is already in the middle, *_other waiting for Future.get() blocking method will throw InterruptedException_*
 -- false: just interrupt Callables are being pending queue, hadn't started yet.
+
+== Tricks
+
+=== SuppressWarning
+
+[source,java]
+----
+@SuppressWarnings("unchecked")
+I imsg = (I) msg;
+----
+_[source] netty/SimpleChannelInboundHandler.java_
+- avoid compiler fire a unchecked warning in generic code.

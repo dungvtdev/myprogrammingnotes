@@ -1,0 +1,48 @@
+= Quick notes netty framework
+:numbered:
+:imagesdir: ./images
+
+== Simple bootstrap nio server
+
+[source,java]
+----
+public void start() throws Exception {
+    final EchoServerHandler serverHandler = new EchoServerHandler();
+    EventLoopGroup group = new NioEventLoopGroup();
+    try {
+        ServerBootstrap b = new ServerBootstrap();
+        b.group(group)
+            .channel(NioServerSocketChannel.class)
+            .localAddress(new InetSocketAddress(port))
+            .childHandler(new ChannelInitializer<SocketChannel>(){
+                @Override
+                public void initChannel(SocketChannel ch)
+                        throws Exception {
+                    ch.pipeline().addLast(serverHandler);
+                }
+            });
+        ChannelFuture f = b.bind().sync();
+        f.channel().closeFuture().sync();
+    } finally {
+        group.shutdownGracefully().sync();
+    }
+}
+----
+- khởi tạo *NioServerSocketChannel* để handler connect
+- *NioEventLoopGroup* để tạo nio event loop.
+- *childHandler(channelHandler)*: khi có kết nối mới đến, NioServerSocketChannel(??) sẽ tạo channel, add vào channel.pipeline() channelHandler, hoạt động trong vòng lặp tiếp theo.
+- *ChannelInitializer*: sau khi vòng lặp đầu chạy xong hàm initChannel (do event ChannelRegistered gọi) sẽ xóa nó ra khỏi pipeline và forward cho channelHandler tiếp theo trong pipeline.
+- *forward event trong pipeline*: dùng hàm *_pipeline().fire[tên event]()_*.
+
+== Release buffer in handler
+
+_"In the SimpleChannelInboundHandler, when channelRead0() completes and returns, SimpleChannelInboundHandler takes
+care of releasing the memory reference to the ByteBuf that holds the message.
+
+In EchoServerHandler you still have to echo the incoming message to the sender,
+and the write() operation, which is asynchronous, may not complete until after
+channelRead() returns. For this reason EchoServerHandler extends ChannelInboundHandlerAdapter, which doesn’t release the message at
+this point.
+
+The message is released in channelReadComplete() in the EchoServerHandler
+when writeAndFlush() is called."_
