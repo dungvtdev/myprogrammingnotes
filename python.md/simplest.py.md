@@ -31,6 +31,29 @@ __Tricks__
 - __list[n]=value, n is must in range(0,len(list))__
 - __dict[key]=value, k may not be in dict.keys()__
 
+__Input/output__
+- python2
+    + __print 'str',__  : khong bi xuong dong
+    + a=input('Name'):
+        * Neu dat trong "" (ex "Dung"), return string
+        * Neu khong, return 1 ten bien
+    + a= raw_input(''): luon return string.
+
+__is vs ==__
+- is so sanh 2 object cung tro toi 1 vi tri
+- == so sanh 2 gia tri bang nhau
+- ex: 
+```python
+a =[1,2,3]
+b = a
+a is b  # True
+a == b  # True
+
+b = a[:]
+a is b  # False
+a == b  # True
+```
+
 __ListMethods__
 - index(), append(), insert(), remove(value), 
 - sort(): increase, sort(reverse=True): decrease, value must comparable.
