@@ -57,3 +57,18 @@ __requests__
 __beautifulsoup__
 - select html tag by css selector.
 - link https://automatetheboringstuff.com/chapter11/
+
+__type__
+- IntType, StringType
+    + ex type(id) is IntType
+
+__logging__ 
+- levels: tuong ung .debug(),.info()...
+    + DEBUG
+    + INFO
+    + WARNING
+    + ERROR
+    + CRITICAL
+- level=L, toan bo level > L se duoc log
+    + ex: level= INFO, toan bo tru DEBUG deu duoc log ra
+- logging.disable(L): disable toan bo level <= L

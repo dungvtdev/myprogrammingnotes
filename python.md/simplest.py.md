@@ -116,3 +116,10 @@ Quantifiers & Alternation
 ## Exception
 
 - KeyboardInterrupt: input() waiting -> interrupt come from user.
+
+## Assert
+
+- assert bool_expression, comment_when_false
+    + raise AssertionError and crash the application, can catch with try-except
+- disabling assertings:
+    + use option -O when run python. ex python -O a.py
