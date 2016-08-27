@@ -146,3 +146,13 @@ Quantifiers & Alternation
     + raise AssertionError and crash the application, can catch with try-except
 - disabling assertings:
     + use option -O when run python. ex python -O a.py
+                                                                                                                                                                                                 
+## Color text
+```python
+    print("\033[1;32;40m Bright Green \033[0m \n")
+```
+- \033[0m: ve mac dinh
+- \033['text_style';'text_color';'bg_color'm
+- text_color: Black,Red,Green,Yello,Blue,Purple,Cyan,White = [30..37]
+- bg_color: [40..47]
+- text_style: NoEffect,Bold,Underline,Negative1,Negative2 = [0,1,2,3,5]
