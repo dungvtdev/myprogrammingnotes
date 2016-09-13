@@ -78,6 +78,15 @@ __Tuple__
 - t= (1)...
 - a = tuple([1,2,3]): list -> tuple
 
+__Set__
+```python
+s = set([iterable])
+s.union(t)
+s.intersection(t)
+s.difference(t)
+...
+```
+
 __Dictionary__
 - unordered -> can't sort, slice...
 - __key__ types: int, float, string, tuple.
@@ -125,6 +134,7 @@ Escaped characters
 - Groups & Lookaround
 - (abc)   capture group
 - \1  backreference to group #1, __use for sub method__
+    + ex: (.+) \1 match "4242"
 - (?:abc) non-capturing group
 - (?=abc) positive lookahead
 - (?!abc) negative lookahead
@@ -133,7 +143,7 @@ Quantifiers & Alternation
 - a* a+ a?    0 or more, 1 or more, 0 or 1
 - a{5} a{2,}  exactly five, two or more
 - a{1,3}  between one & three
-- a+? a{2,}?  match as few as possible
+- a+? a{2,}?, a*?, a??  match as few as possible (non-greedy)
 - ab|cd   match ab or cd
 
 ## Exception
