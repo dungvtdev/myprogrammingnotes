@@ -166,3 +166,61 @@ Quantifiers & Alternation
 - text_color: Black,Red,Green,Yello,Blue,Purple,Cyan,White = [30..37]
 - bg_color: [40..47]
 - text_style: NoEffect,Bold,Underline,Negative1,Negative2 = [0,1,2,3,5]
+
+## Import module
+```python
+from X import *
+from X import a,b,c
+
+import X
+
+X = __import__('X')
+```
+
+### Import module HOWTO
+__When Python imports a module, it first checks the module registry (sys.modules) to see if the module is already imported__. If that’s the case, Python uses the existing module object as is.
+
+Otherwise, Python does something like this:
+
+- Create a new, empty module object (this is essentially a dictionary)
+- Insert that module object in the sys.modules dictionary
+- Load the module code object (if necessary, compile the module first)
+- Execute the module code object in the new module’s namespace. All variables assigned by the code will be available via the module object.
+
+This means that it’s fairly cheap to import an already imported module; Python just has to look the module name up in a dictionary.
+
+### Circular dependency
+__Case 1__
+
+If you run a module as a script (i.e. give its name to the interpreter, rather than importing it), it’s loaded under the module name __main__.
+If you then import the same module from your program, it’s reloaded and reexecuted under its real name. If you’re not careful, you may end up doing things twice.
+
+__Case 2__
+
+In Python, things like def, class, and import are statements too.
+Modules are executed during import, and new functions and classes won’t appear in the module’s namespace until the def (or class) statement has been executed.
+Ex:
+```python
+# module X
+
+import Y
+
+def spam():
+    print "function in module x"
+
+
+# module Y
+from X import spam # doesn't work: spam isn't defined yet!
+```
+We run module X first. WHen Python reaches the import Y, it loads the code for Y, and starts executing it instead.
+At this time, X, Y are already installed in sys.modules, but X is not executed complete yet, so the statement Y import spam get error.
+To fix that, let import Y move to the end of module X.
+
+```python
+# module X
+
+def spam():
+    print "function in module x"
+
+import Y
+```
