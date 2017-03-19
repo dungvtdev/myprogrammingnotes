@@ -7,6 +7,9 @@
 
 ## Simplest
 
+- PYTHONPATH: path de python interpreter load cac module tu cac path duoc liet ke
+	+ sys.path
+
 - __//__: interger division/floored quotient  22//8 = 2
 - __**__: Exponent
 - __'str' * n__: 'str...str' n times, n: int.
@@ -224,3 +227,5 @@ def spam():
 
 import Y
 ```
+
+

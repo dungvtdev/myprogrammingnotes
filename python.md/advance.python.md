@@ -50,6 +50,18 @@ class Child(Base):     # neu Base khong inherit tu object, thay the bang Chile(b
 - class inherit tu object la new-style class, la 1 type
 - class khong inherit tu object, goi la classic class, la 1 classobj
 
+- neu khong the viet lai Base ma Base khong ke thua tu object
+
+```python
+class Base():
+    def meth(self, arg):
+        print arg
+
+class Child(Base, object):
+    def meth(self, arg):
+        super(Child, self).meth(arg)
+```
+
 Xem http://stackoverflow.com/questions/1713038/super-fails-with-error-typeerror-argument-1-must-be-type-not-classobj
 
 ## Class style
@@ -197,4 +209,44 @@ print get_text.__doc__
 print get_text.__module__ 
 # __main__
 
+```
+
+## Scope
+
+```python
+from functools import wraps
+
+def command(command_name, wrap_name_dict=None):
+    if wrap_name_dict is None:
+        wrap_name_dict = {}
+
+    def command_decorator(func):
+        print(command_name)
+        print(wrap_name_dict)		#loi o day
+	if wrap_name_dict is None:
+		wrap_name_dict = {}
+
+        @wraps(func)
+        def run():
+            return func
+        return run
+
+    return command_decorator
+
+@command('hello')
+def test():
+	pass
+
+test()
+
+'''Output
+hello
+{}
+Error: UnboundLocalError: local variable 'wrap_name_dict' referenced before assignment, line 9
+Vi dong: 
+print(wrap_name_dict)
+if wrap_name_dict is None:
+	wrap_name_dict = {}  #o day wrap_name_dict dc assignment nen coi la local variable, nhung truoc do co print(wrap_name_dict) nen mac loi referenced before assignment
+
+'''
 ```
